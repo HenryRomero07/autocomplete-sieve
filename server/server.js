@@ -25,7 +25,20 @@ function test() {
 return resp.json({ test: test() });
 })
 
+app.get('/autocomplete', (req, res) => {
+    const query = req.query.q ? req.query.q.toLowerCase() : '';
+    
+    if (!query) {
+        return res.json([]);
+    }
 
+    // Filtrar las palabras del archivo words.json con lo que se escriba
+    const matches = data
+        .filter(word => typeof word === 'string' && word.toLowerCase().startsWith(query))
+        .slice(0, 10) 
+        .map(text => ({ text, source: 'dataset' }));
+    return res.json(matches);
+});
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
