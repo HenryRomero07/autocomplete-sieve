@@ -8,6 +8,7 @@ const Autocomplete = ({ onSearch }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [source, setSource] = useState('')
     const wrapperRef = useRef(null);
 
     // Cerrar sugerencias al hacer clic fuera
@@ -21,7 +22,7 @@ const Autocomplete = ({ onSearch }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Petición al backend con Debounce (~200ms) y manejo de estados (RF4)
+    // Petición al backend con Debounce y manejo de estados
     useEffect(() => {
         const trimmed = query.trim();
         if (!trimmed) {
@@ -38,7 +39,8 @@ const Autocomplete = ({ onSearch }) => {
                 const response = await fetch(`/autocomplete?q=${encodeURIComponent(trimmed)}`);
                 if (!response.ok) throw new Error('Error en el servidor');
                 const data = await response.json();
-                setSuggestions(data);
+                setSuggestions(data.suggestions);
+                setSource(data.source)
                 setIsOpen(true);
                 setActiveIndex(-1);
             } catch (err) {
@@ -110,7 +112,6 @@ const Autocomplete = ({ onSearch }) => {
                                 </svg>
                             </button>
                         )}
-                        <button className="search-btn" onClick={handleSearchClick}>Buscar</button>
                     </div>
                     <div className={`dropdown ${isOpen ? 'open' : ''}`}>
                         <div id="suggestionsList">
@@ -118,8 +119,8 @@ const Autocomplete = ({ onSearch }) => {
                                 <div className="empty-state" style={{ color: '#d93838' }}>Error al conectar con el servidor</div>
                             ) : suggestions.length > 0 ? (
                                 suggestions.map((item, idx) => {
-                                    const textVal = item.text || item.term;
-                                    const sourceVal = item.source || 'dataset'; 
+                                    const textVal = typeof item === 'string' ? item: (item.text || item.text);
+                                    const sourceVal = source || 'dataset';
                                     return (
                                         <div 
                                             key={idx} 

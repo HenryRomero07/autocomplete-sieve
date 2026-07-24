@@ -43,6 +43,7 @@ app.get('/autocomplete', (req, resp) => {
         hits++
         source = "cache"
         suggestions = cached
+
     } else {                             // MISS: no lo tengo
         misses++
         suggestions = buscarPorPrefijo(q)  // busco en el dataset
