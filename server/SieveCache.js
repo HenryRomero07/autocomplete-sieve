@@ -16,7 +16,7 @@ class SieveCache {
     }
 
     // Inserta un nodo al inicio de la lista (head)
-     addnode(node) {
+    addnode(node) {
         if (!this.head) {
             this.head = node
             this.tail = node
@@ -40,12 +40,12 @@ class SieveCache {
             node.next.prev = node.prev
         } else {
             this.tail = node.prev
-        }   
+        }
 
-}
+    }
 
     // Busca una clave en la caché; si existe, marca visited y devuelve el valor
-get(key) {
+    get(key) {
         if (!this.cache.has(key)) {
             return null
         }
@@ -55,7 +55,7 @@ get(key) {
         return node.value
     }
 
-    // Inserta o actualiza un par clave-valor; evicta si supera la capacidad
+    // Inserta o actualiza un par clave-valor; desaloja si supera la capacidad
     set(key, value) {
         if (this.cache.has(key)) {
             const node = this.cache.get(key)
@@ -94,6 +94,8 @@ class Node {
         this.prev = null
         this.next = null
     }
-}   
+}
+
+module.exports = SieveCache
 
 
