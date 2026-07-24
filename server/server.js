@@ -55,6 +55,7 @@ app.get('/autocomplete', (req, resp) => {
 })
 
 app.get('/metrics', (req, resp) => {
+    resp.json({ hits, misses, cacheSize: cache.cache.size, maxEntries: cache.capacity })
 })
 
 app.listen(port, () => {
